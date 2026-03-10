@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Add this line
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+
+  publicKey String
+
+  createdAt DateTime @default(now())
+
+  messages Message[]
+  participants ConversationParticipant[]
+  preKeys PreKey[]
+
+  conversationKeys ConversationKey[]
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  participants ConversationParticipant[]
+  messages Message[]
+  keys ConversationKey[]
+}
+
+model ConversationParticipant {
+  id String @id @default(uuid())
+
+  userId String
+  conversationId String
+
+  user User @relation(fields: [userId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+
+  @@unique([userId, conversationId])
+}
+
+model Message {
+  id String @id @default(uuid())
+
+  conversationId String
+  senderId String
+
+  ciphertext String
+  nonce String
+
+  createdAt DateTime @default(now())
+
+  sender User @relation(fields: [senderId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model ConversationKey {
+  id String @id @default(uuid())
+
+  conversationId String
+  userId String
+
+  encryptedKey String
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([conversationId, userId])
+}
+
+model PreKey {
+  id String @id @default(uuid())
+
+  userId String
+  keyId Int
+  publicKey String
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, keyId])
+}

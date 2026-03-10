@@ -1,0 +1,21 @@
+.status-bubble {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    background-color: #ccc; /* Cinza = Offline */
+}
+.status-bubble.online {
+    background-color: #28a745; /* Verde = Online */
+    box-shadow: 0 0 5px #28a745;
+}
+.read-status {
+    font-size: 0.8em;
+    margin-left: 5px;
+    color: #888;
+}
+.read-status.read {
+    color: #3498db; /* Azul = Lido */
+    font-weight: bold;
+}

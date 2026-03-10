@@ -1,0 +1,15 @@
+DATABASE_URL="postgresql://postgres:admin123@localhost:5432/cryptochat"
+
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519', {
+  publicKeyEncoding: { type: 'spki', format: 'pem' },
+  privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
+
+
+  import crypto from 'crypto'
+
+
+//criar migations
+npx sequelize-cli migration:generate --name comit-4
+
+//migrar pro banco
+npx sequelize-cli db:migrate
