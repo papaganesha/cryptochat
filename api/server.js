@@ -1,59 +1,62 @@
+import "dotenv/config";
 import express from "express";
-import cors from "cors";
-import http from "http";
+import { createServer } from "http";
 import { Server } from "socket.io";
-import { socketHandlers } from "./socket.js";
-import { sequelize, waitForDB } from "./db_connect.js";
+import { socketHandlers } from "./config/socket.js";
+import cors from "cors";
 
+// Importações das verificações de saúde
+import { waitForDB } from "./config/db_connect.js";
+import { waitForRedis } from "./config/redis.js"; // Nova função aqui!
 
-const app = express();
-const server = http.createServer(app);
-
-export const io = new Server(server, {
-  cors: {
-    origin: true, // Isso resolve 99% dos problemas de conexão em dev
-    credentials: true,
-  }
-});
-
-
-
-// Middlewares
-app.use(cors({ origin: "*" }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// 2. Importações de rotas e handlers APÓS a criação do IO
 import authRoutes from "./routes/auth.routes.js";
 import messageRoutes from "./routes/messages.routes.js";
 
-// Inicializa os eventos de Socket
-socketHandlers(io)
+const app = express();
+const httpServer = createServer(app);
 
-// Registra Rotas
+app.use(cors());
+app.use(express.json());
+
+// Rotas
 app.use("/auth", authRoutes);
 app.use("/messages", messageRoutes);
 
-const PORT = 3000;
+// Exportamos o IO para ser usado nos Services
+const io = new Server(httpServer, { cors: { origin: "*" } });
+socketHandlers(io); // Configura os handlers de socket
+/**
+ * Função de inicialização orquestrada
+ */
 
-async function start() {
+export { app, io } // <--- ISSO TEM QUE ESTAR AQUI
+
+const startServer = async () => {
+  console.log("🛠️ Iniciando verificações de sistema...");
+
   try {
-    console.log("⏳ Aguardando Banco de Dados...");
+    // 1. Aguarda o Banco de Dados Relacional (Postgres)
     await waitForDB();
-    await sequelize.sync();
-    console.log("✅ Banco de Dados conectado.");
 
-    // 3. ESSENCIAL: Usar server.listen em vez de app.listen
-    // O app.listen cria um novo servidor e ignora o Socket.io!
-    server.listen(PORT, () => {
-      console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error("❌ Falha ao iniciar o servidor:", error);
-    process.exit(1);
+    // 2. Aguarda o Banco de Dados em Memória (Redis)
+    await waitForRedis();
+
+    // 3. Define a porta e sobe o servidor
+   if(process.env.NODE_ENV !== "test") {
+    const PORT = process.env.PORT || 3000;
+    httpServer.listen(PORT, () => {
+      console.log(`🚀 SERVIDOR ONLINE: http://localhost:${PORT}`);
+      console.log("💡 Tudo pronto para processar mensagens efêmeras.");
+    })
+  }else{
+    console.log("⚠️ Modo de Teste: Servidor não iniciado, mas dependências estão OK.");
   }
-}
+    
+  } catch (criticalError) {
+    // Se algo der muito errado no boot, o servidor avisa e não sobe
+    console.error("🚨 FALHA CRÍTICA NO BOOT:", criticalError);
+    process.exit(1); // Encerra o processo com erro
+  }
+};
 
-start();
-
-
+startServer();

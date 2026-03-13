@@ -6,16 +6,13 @@ import { middlewareValidarJWT } from "../middleware/jwt_validate.js"
 const router = Router()
 
 // importa controller
-import { register, login, users, status } from "../controllers/auth.controller.js"
+import { register, login, status } from "../controllers/auth.controller.js"
 
 // rota registro
 router.post("/register",register)
 
 // rota login
 router.post("/login",login)
-
-// rota testejwt
-router.post("/users",middlewareValidarJWT ,users)
 
 // rota status token
 router.get("/status",middlewareValidarJWT ,status)

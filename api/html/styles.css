@@ -1,21 +1,30 @@
-.status-bubble {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
-    background-color: #ccc; /* Cinza = Offline */
-}
-.status-bubble.online {
-    background-color: #28a745; /* Verde = Online */
-    box-shadow: 0 0 5px #28a745;
-}
-.read-status {
-    font-size: 0.8em;
-    margin-left: 5px;
-    color: #888;
-}
-.read-status.read {
-    color: #3498db; /* Azul = Lido */
-    font-weight: bold;
-}
+/* Layout Geral */
+body { font-family: sans-serif; display: flex; justify-content: center; background: #f0f2f5; padding-top: 50px; }
+.container { display: flex; width: 750px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); min-height: 500px; }
+
+/* Sidebar */
+#sidebar { width: 180px; border-right: 1px solid #ddd; padding-right: 15px; display: flex; flex-direction: column; }
+#listaUsuarios { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+
+/* Área do Chat */
+.chat-area { flex: 1; padding-left: 20px; display: flex; flex-direction: column; }
+#status { font-size: 0.9em; margin-bottom: 10px; color: #65676b; display: flex; align-items: center; }
+#messages { flex: 1; height: 300px; overflow-y: auto; border: 1px solid #ddd; list-style: none; padding: 10px; margin: 10px 0; border-radius: 4px; background: #fafafa; }
+
+/* Status de Conexão (Bolinha) */
+.status-bubble { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; background-color: #ccc; transition: background 0.3s; }
+.status-bubble.online { background-color: #28a745; box-shadow: 0 0 5px #28a745; }
+
+/* Status de Leitura (Check) */
+.read-status { font-size: 0.8em; margin-left: 5px; color: #888; }
+.read-status.read { color: #3498db; font-weight: bold; }
+
+/* Inputs e Botões */
+.input-group { display: flex; flex-direction: column; gap: 10px; }
+input, textarea, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; font-size: 14px; }
+textarea { height: 60px; resize: none; }
+.btn-primary { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 6px; font-weight: bold; }
+.btn-primary:hover { background: #0056b3; }
+
+#loginArea { background: #fff; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #f0f2f5; }
+.msg-item { padding: 10px; margin-bottom: 8px; background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); border-left: 4px solid #007bff; }

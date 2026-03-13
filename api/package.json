@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest",
     "dev": "nodemon server.js"
   },
   "keywords": [],
@@ -12,6 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "@socket.io/admin-ui": "^0.5.1",
+    "@vitest/ui": "^4.1.0",
     "axios": "^1.13.6",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
@@ -27,7 +30,9 @@
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
     "sqlite3": "^5.0.2",
+    "supertest": "^7.2.2",
     "tweetnacl": "^1.0.3",
-    "tweetnacl-util": "^0.15.1"
+    "tweetnacl-util": "^0.15.1",
+    "vitest": "^4.1.0"
   }
 }

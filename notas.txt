@@ -13,3 +13,13 @@ npx sequelize-cli migration:generate --name comit-4
 
 //migrar pro banco
 npx sequelize-cli db:migrate
+
+
+/src
+  /config         (Conexões)
+  /controllers    (Recebem requisições)
+  /services       (Regras de negócio - O Cérebro)
+  /repositories   (Acesso a dados - BD e Redis)
+  /middleware     (Segurança)
+  /utils          (Ferramentas/Logger)
+  /routes         (Caminhos)

@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../db_connect.js";
+import { sequelize } from "../config/db_connect.js";
 
 // --- MODELO: USER ---
 // ID(UUIDV4 PRIMARY) --- USERNAME(STRING NOT NULL) --- PASSWORD(STRING NOT  NULL) --- PBKEY(TEXT NOT NULL) --- PVKEY(TEXT NOT NULL), ROLE(ENUM )

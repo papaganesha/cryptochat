@@ -5,196 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat Efêmero - Sidebar</title>
     <style>
-      body {
-        font-family: sans-serif;
-        display: flex;
-        justify-content: center;
-        background: #f0f2f5;
-        padding-top: 50px;
-      }
-
-      /* Layout principal */
-      .container {
-        display: flex;
-        width: 700px;
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        min-height: 450px;
-      }
-
+      body { font-family: sans-serif; display: flex; justify-content: center; background: #f0f2f5; padding-top: 50px; }
+      .container { display: flex; width: 750px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); min-height: 500px; }
+      
       /* Sidebar */
-      #sidebar {
-        width: 180px;
-        border-right: 1px solid #ddd;
-        padding-right: 15px;
-        display: flex;
-        flex-direction: column;
-      }
-
-      #listaUsuarios {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        margin-top: 10px;
-      }
-
-      #listaUsuarios button {
-        background: #e4e6eb;
-        border: none;
-        padding: 10px;
-        border-radius: 6px;
-        cursor: pointer;
-        text-align: left;
-        font-weight: bold;
-        transition: background 0.2s;
-      }
-
-      #listaUsuarios button:hover {
-        background: #d8dadf;
-      }
-
+      #sidebar { width: 180px; border-right: 1px solid #ddd; padding-right: 15px; display: flex; flex-direction: column; }
+      #listaUsuarios { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+      
       /* Área do Chat */
-      .chat-area {
-        flex: 1;
-        padding-left: 20px;
-        display: flex;
-        flex-direction: column;
-      }
+      .chat-area { flex: 1; padding-left: 20px; display: flex; flex-direction: column; }
+      #status { font-size: 0.9em; margin-bottom: 10px; color: #65676b; display: flex; align-items: center; }
+      #messages { flex: 1; height: 300px; overflow-y: auto; border: 1px solid #ddd; list-style: none; padding: 10px; margin: 10px 0; border-radius: 4px; background: #fafafa; }
+      
+      /* Estilos de Status */
+      .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; background: #bbb; }
+      .online-dot { background: #2ecc71 !important; box-shadow: 0 0 5px #2ecc71; }
 
-      #status {
-        font-size: 0.8em;
-        margin-bottom: 10px;
-        color: #65676b;
-      }
-
-      #messages {
-        flex: 1;
-        height: 300px;
-        overflow-y: auto;
-        border: 1px solid #ddd;
-        list-style: none;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 4px;
-        background: #fafafa;
-      }
-
-      .msg-item {
-        padding: 8px;
-        margin-bottom: 8px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        transition: opacity 0.5s;
-      }
-
-      /* Inputs e Botões */
-      .input-group {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      input {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        outline: none;
-      }
-      input:focus {
-        border-color: #007bff;
-      }
-
-      .btn-primary {
-        padding: 10px;
-        cursor: pointer;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-weight: bold;
-      }
-      .btn-primary:hover {
-        background: #0056b3;
-      }
-
-      #loginArea {
-        background: #fff;
-        margin-bottom: 15px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #f0f2f5;
-      }
+      /* Inputs */
+      .input-group { display: flex; flex-direction: column; gap: 10px; }
+      input, textarea, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
+      textarea { height: 60px; resize: none; }
+      .btn-primary { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 6px; font-weight: bold; }
+      .btn-primary:hover { background: #0056b3; }
+      
+      #loginArea { background: #fff; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #f0f2f5; }
+      .msg-item { padding: 8px; margin-bottom: 8px; background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); border-left: 4px solid #007bff; }
     </style>
   </head>
   <body>
     <div class="container">
-      <!-- Sidebar de Usuários -->
       <div id="sidebar">
         <h4 style="margin-top: 0; color: #1c1e21">Conversas</h4>
-        <div id="listaUsuarios">
-          <!-- Usuários aparecerão aqui dinamicamente -->
-        </div>
-        <button
-          onclick="encerrarSessao()"
-          style="
-            margin-top: auto;
-            background: none;
-            border: none;
-            color: #dc3545;
-            cursor: pointer;
-            font-size: 0.8em;
-          "
-        >
-          Sair da conta
-        </button>
+        <div id="listaUsuarios"></div>
+        <button onclick="encerrarSessao()" style="margin-top: auto; background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.8em;">Sair da conta</button>
       </div>
 
-      <!-- Área do Chat -->
       <div class="chat-area">
-        <div id="status">Status: Desconectado</div>
+        <div id="status"><span class="status-dot"></span> Offline</div>
 
-        <!-- Login e Registro -->
         <div id="loginArea" class="input-group">
           <input type="text" id="user" placeholder="Seu usuário" />
           <input type="password" id="pass" placeholder="Sua senha" />
-          <button class="btn-primary" onclick="realizarAcesso()">
-            Entrar no Sistema
-          </button>
+          <button class="btn-primary" onclick="realizarAcesso()">Entrar no Sistema</button>
         </div>
 
         <ul id="messages"></ul>
 
-        <!-- Área de Envio -->
-      <div class="input-group">
-    <input type="text" id="destinatario" placeholder="Username do destino">
-    <textarea id="msgConteudo" placeholder="Mensagem..."></textarea>
-    
-    <div style="display: flex; gap: 10px; font-size: 0.85em; background: #eee; padding: 10px; border-radius: 5px;">
-        <div>
-            <label><input type="radio" name="tipoMsg" value="comum" checked onclick="ajustarTTL(false)"> Comum (Longa)</label><br>
-            <label><input type="radio" name="tipoMsg" value="efemera" onclick="ajustarTTL(true)"> Efêmera (Visualização Única)</label>
-        </div>
-        <div style="border-left: 1px solid #ccc; padding-left: 10px;">
-            <label>Duração:</label>
-            <select id="ttlSelect">
-                <!-- Opções padrão para Comum -->
-                <option value="86400">1 Dia</option>
-                <option value="604800">7 Dias</option>
-            </select>
-        </div>
-    </div>
-
-<!-- No seu HTML -->
-<button class="btn-primary" onclick="dispararEnvio()">
-    Enviar Mensagem
-</button>
-
+        <div class="input-group">
+          <input type="text" id="destinatario" placeholder="Username do destino">
+          <textarea id="msgConteudo" placeholder="Mensagem..."></textarea>
+          
+          <div style="display: flex; gap: 10px; font-size: 0.85em; background: #eee; padding: 10px; border-radius: 5px;">
+              <div>
+                  <label><input type="radio" name="tipoMsg" value="comum" checked onclick="ajustarTTL(false)"> Comum</label><br>
+                  <label><input type="radio" name="tipoMsg" value="efemera" onclick="ajustarTTL(true)"> Efêmera</label>
+              </div>
+              <div style="border-left: 1px solid #ccc; padding-left: 10px;">
+                  <label>Expira em:</label>
+                  <select id="ttlSelect"></select>
+              </div>
+          </div>
+          <button class="btn-primary" onclick="dispararEnvio()">Enviar Mensagem</button>
         </div>
       </div>
     </div>
-
-    <!-- O script.js que montamos anteriormente deve estar na mesma pasta -->
     <script src="socket-client.js"></script>
   </body>
 </html>
