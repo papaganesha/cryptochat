@@ -4,14 +4,17 @@ import { UserRepository } from "../repositories/user.repository.js";
 import { getKeys } from "../generate_keys.js";
 import { log } from "../utils/logger.js";
 
-export const AuthService = {
-  // Lógica de Registro
-  async registerUser(username, password) {
-    const { publicKey, privateKey } = await getKeys();
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+// Senha falsa para evitar Timing Attacks quando o user não existe
+const DUMMY_HASH = "$2b$10$vI8vKEW.I0p84Y6D.H7S9eM5G1VvH.8vKEW.I0p84Y6D.H7S9eM";
 
-    log.info("Auth", "Senha processada com hash.");
+export const AuthService = {
+  async registerUser(username, password) {
+    // 💡 Senior Tip: Validar se o usuário já existe antes de gerar chaves (economiza CPU)
+    const exists = await UserRepository.findByUsername(username);
+    if (exists) throw new Error("Este nome de usuário já está em uso.");
+
+    const { publicKey, privateKey } = await getKeys();
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await UserRepository.create({
       username,
@@ -24,19 +27,17 @@ export const AuthService = {
     return newUser;
   },
 
-  // Lógica de Login
   async authenticate(username, password) {
     const user = await UserRepository.findByUsername(username);
 
-    if (!user) {
-      log.error("Auth", "Usuário não encontrado.");
-      throw new Error("Credentials not found.");
-    }
+    // Se o usuário não existe, comparamos a senha com o DUMMY_HASH
+    // Isso faz o tempo de resposta ser igual ao de um usuário que existe
+    const isValid = await bcrypt.compare(password, user?.password || DUMMY_HASH);
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      log.error("Auth", "Senha incorreta.");
-      throw new Error("Invalid credentials.");
+    if (!user || !isValid) {
+      log.error("Auth", `Falha de login para o usuário: ${username}`);
+      // 🛡️ NUNCA diga se foi o usuário ou a senha que errou
+      throw new Error("Credenciais inválidas."); 
     }
 
     const token = jwt.sign(
@@ -44,9 +45,6 @@ export const AuthService = {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
-
-    log.success("Auth", `Login realizado: ${user.username}`);
-    log.info("JWT", `Token gerado para ID: ${user.id}`);
 
     return { user, token };
   }

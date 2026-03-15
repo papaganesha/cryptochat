@@ -8,6 +8,7 @@ import cors from "cors";
 // Importações das verificações de saúde
 import { waitForDB } from "./config/db_connect.js";
 import { waitForRedis } from "./config/redis.js"; // Nova função aqui!
+import { MonitorService } from "./services/monitor.service.js"; // Importa o serviço de monitoramento
 
 import authRoutes from "./routes/auth.routes.js";
 import messageRoutes from "./routes/messages.routes.js";
@@ -46,7 +47,8 @@ const startServer = async () => {
     const PORT = process.env.PORT || 3000;
     httpServer.listen(PORT, () => {
       console.log(`🚀 SERVIDOR ONLINE: http://localhost:${PORT}`);
-      console.log("💡 Tudo pronto para processar mensagens efêmeras.");
+      // Inicia o monitoramento do Redis (2GB limit) a cada 30 segundos
+  MonitorService.start(30);
     })
   }else{
     console.log("⚠️ Modo de Teste: Servidor não iniciado, mas dependências estão OK.");

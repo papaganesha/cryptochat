@@ -8,7 +8,13 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST || "localhost",
     dialect: "postgres",
-    logging: false // Desativa logs chatos de SQL no terminal
+    logging: false, // Desativa logs chatos de SQL no terminal
+    pool: {
+      max: 70,           // Aumentamos para 70 para cobrir os 60 usuários + margem
+      min: 10,           // Mantém pelo menos 10 conexões abertas
+      acquire: 60000,    // Tempo máximo (60s) tentando conectar antes de dar erro
+      idle: 10000        // Tempo que uma conexão pode ficar parada antes de ser fechada
+    }
   },
 );
 

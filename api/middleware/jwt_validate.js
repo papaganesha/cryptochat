@@ -22,8 +22,10 @@ export async function middlewareValidarJWT(req, res, next) {
       const user = await User.findByPk(decoded.id);
       if (!user) return res.status(401).json({ error: "Usuário não encontrado" });
 
-      req.user = user; // Agora req.user.inbox_token funcionará no controller
-      req.userId = decoded.id;
+      req.user = {
+        userId: user.id,
+        inbox_token: user.inbox_token
+      }; // Agora req.user.inbox_token funcionará no controller
       next();
     } catch (dbError) {
       return res.status(500).json({ error: "Erro interno ao validar usuário" });
